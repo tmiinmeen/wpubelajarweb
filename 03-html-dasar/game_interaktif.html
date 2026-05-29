@@ -1,0 +1,2084 @@
+<!doctype html>
+<html lang="id">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Interaktif Informatika - MAN 3 HSS</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Rajdhani:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: 'Rajdhani', sans-serif;
+      color: #ffffff;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      overflow: hidden;
+    }
+
+    .title-font {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Common Styles */
+    .container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 20px;
+    }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: none;
+      color: #00d4ff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .btn-back:hover {
+      color: #00ffff;
+    }
+
+    .score-display {
+      text-align: right;
+      font-size: 14px;
+      color: #cccccc;
+    }
+
+    .score-display-number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    button {
+      font-family: 'Rajdhani', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cyber {
+      background: linear-gradient(90deg, #00d4ff, #0099ff);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-cyber:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+    }
+
+    .btn-cyber::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.5s;
+    }
+
+    .btn-cyber:hover::before {
+      left: 100%;
+    }
+
+    /* Welcome Screen */
+    .welcome-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .welcome-content {
+      text-align: center;
+      z-index: 10;
+      animation: slideIn 0.6s ease forwards;
+    }
+
+    .welcome-title {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #00d4ff, #0099ff, #ff00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .welcome-school {
+      font-size: 32px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 40px;
+    }
+
+    .card-glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 600px;
+      margin: 0 auto 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+
+    .welcome-emoji {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .welcome-subtitle {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .welcome-description {
+      font-size: 16px;
+      color: #cccccc;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* Main Menu */
+    .main-menu-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .menu-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .menu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .menu-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .menu-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .menu-description {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 16px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .menu-button {
+      background: linear-gradient(90deg, #00d4ff, #0099ff);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .menu-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+    }
+
+    .profile-info {
+      font-size: 14px;
+      line-height: 1.8;
+      text-align: center;
+      color: #cccccc;
+    }
+
+    .profile-info span {
+      color: #00d4ff;
+      font-weight: bold;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: #1a1a2e;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00ff64;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #999999;
+      margin-top: 4px;
+    }
+
+    /* Profile Screen */
+    .profile-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-form-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .profile-icon {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      color: #00d4ff;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #1a1a2e;
+      border: 2px solid #00d4ff;
+      border-radius: 8px;
+      padding: 12px;
+      color: white;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .form-button {
+      width: 100%;
+      background: linear-gradient(90deg, #00d4ff, #0099ff);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+    }
+
+    .form-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Materi Screen */
+    .materi-container {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .materi-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .materi-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      animation: slideIn 0.5s ease forwards;
+    }
+
+    .materi-section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-number {
+      background: #00d4ff;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .materi-text {
+      color: #cccccc;
+      line-height: 1.8;
+      font-size: 14px;
+      white-space: pre-line;
+    }
+
+    .tips-section {
+      background: rgba(0, 200, 83, 0.2);
+      border: 2px solid #00ff64;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .tips-title {
+      color: #00ff64;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .tips-list {
+      color: #cccccc;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .materi-button {
+      text-align: center;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    /* Level Select */
+    .level-select-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .level-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .level-card:hover:not(.locked) {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .level-card.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .level-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+
+    .level-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 8px;
+    }
+
+    .level-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .level-description {
+      font-size: 13px;
+      color: #cccccc;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .level-stars {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    .level-score {
+      color: #00ff64;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .level-button {
+      background: linear-gradient(90deg, #00d4ff, #0099ff);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .level-button:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+    }
+
+    .level-button:disabled {
+      background: #666666;
+      cursor: not-allowed;
+    }
+
+    /* Game Screen */
+    .game-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .game-area {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      overflow: auto;
+      margin-bottom: 16px;
+    }
+
+    .game-hint {
+      text-align: center;
+      color: #cccccc;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .game-footer {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .btn-check {
+      background: linear-gradient(90deg, #00ff64, #00cc50);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-check:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 255, 100, 0.4);
+    }
+
+    /* Level 1 Game */
+    .level1-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: 100%;
+    }
+
+    .game-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .column-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 12px;
+    }
+
+    .source-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .draggable-item {
+      background: linear-gradient(90deg, #9c27b0, #6200ea);
+      padding: 12px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s ease;
+      touch-action: none;
+    }
+
+    .draggable-item:active {
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+
+    .draggable-item.dragging {
+      opacity: 0.5;
+      transform: scale(1.1);
+    }
+
+    .drop-zones {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .drop-zone {
+      background: rgba(0, 212, 255, 0.1);
+      border: 2px dashed #666666;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: #999999;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .drop-zone.drag-over {
+      background: rgba(0, 255, 255, 0.2);
+      border-color: #00ffff;
+      transform: scale(1.02);
+    }
+
+    .drop-zone.correct {
+      background: rgba(0, 255, 100, 0.3);
+      border-color: #00ff64;
+    }
+
+    .drop-zone.incorrect {
+      background: rgba(255, 50, 50, 0.3);
+      border-color: #ff3232;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    /* Level 2 Game */
+    .level2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: 100%;
+    }
+
+    /* Level 3 Game */
+    .level3-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: 100%; 
+    }
+
+    .level3-source {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      
+    }
+
+    .level3-source-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 12px;
+    }
+
+    .items-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .item-tag {
+      background: linear-gradient(90deg, #e91e63, #9c27b0);
+      padding: 6px 12px; 
+      border-radius: 20px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s ease;
+      touch-action: none;
+    }
+
+    .item-tag:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+    }
+
+    .item-tag.dragging {
+      opacity: 0.5;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      flex: 1;
+    }
+
+    .category-box {
+      background: #1a1a2e;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .category-name {
+      font-size: 14px;
+      font-weight: bold;
+      color: #00d4ff;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .category-drop {
+      background: rgba(0, 212, 255, 0.1);
+      border: 2px dashed #666666;
+      border-radius: 8px;
+      padding: 8px;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .category-drop.drag-over {
+      background: rgba(0, 255, 255, 0.2);
+      border-color: #00ffff;
+    }
+
+    .category-drop.correct {
+      background: rgba(0, 255, 100, 0.3);
+      border-color: #00ff64;
+    }
+
+    .category-drop.incorrect {
+      background: rgba(255, 50, 50, 0.3);
+      border-color: #ff3232;
+    }
+
+    /* Result Screen */
+    .result-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      animation: slideIn 0.6s ease forwards;
+    }
+
+    .result-emoji {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .result-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .result-title.pass {
+      color: #00ff64;
+    }
+
+    .result-title.fail {
+      color: #ff6b6b;
+    }
+
+    .result-subtitle {
+      font-size: 18px;
+      color: #cccccc;
+      margin-bottom: 24px;
+    }
+
+    .result-score-box {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .result-score {
+      font-size: 48px;
+      font-weight: bold;
+      color: #ffd700;
+      margin-bottom: 8px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .result-score-label {
+      color: #999999;
+      font-size: 14px;
+    }
+
+    .result-stars {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      font-size: 32px;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-button {
+      background: linear-gradient(90deg, #00d4ff, #0099ff);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .result-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+    }
+
+    .result-button.secondary {
+      background: #666666;
+    }
+
+    .result-button.secondary:hover {
+      background: #777777;
+    }
+
+    .completion-message {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(0, 200, 83, 0.2);
+      border: 2px solid #00ff64;
+      border-radius: 8px;
+      color: #00ff64;
+      font-weight: bold;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 16px 24px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      z-index: 1000;
+      animation: slideUp 0.3s ease;
+      max-width: 90%;
+    }
+
+    .toast.success {
+      background: linear-gradient(90deg, #00c853, #00e676);
+    }
+
+    .toast.error {
+      background: linear-gradient(90deg, #ff1744, #ff5252);
+    }
+
+    .toast.info {
+      background: linear-gradient(90deg, #00b0ff, #40c4ff);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 12px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .level1-grid,
+      .level2-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome-title {
+        font-size: 32px;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .level-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .result-buttons {
+        flex-direction: column;
+      }
+    }
+
+    .decorative-element {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.2;
+    }
+
+    .element-1 {
+      width: 100px;
+      height: 100px;
+      background: #00d4ff;
+      top: 40px;
+      left: 40px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .element-2 {
+      width: 150px;
+      height: 150px;
+      background: #9c27b0;
+      bottom: 80px;
+      right: 80px;
+      animation: float 3.5s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+
+    .element-3 {
+      width: 80px;
+      height: 80px;
+      background: #00ff64;
+      top: 45%;
+      right: 40px;
+      animation: float 4s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div id="app"></div>
+  <script>
+    // ===========================
+    // Global State
+    // ===========================
+    const defaultConfig = {
+      welcome_title: "Welcome To Game Interaktif",
+      school_name: "MAN 3 HSS",
+      primary_color: "#00d4ff",
+      secondary_color: "#302b63",
+      text_color: "#ffffff",
+      accent_color: "#00ff64",
+      surface_color: "#1a1a2e"
+    };
+
+    let config = { ...defaultConfig };
+    let currentScreen = 'welcome';
+    let currentLevel = 1;
+    let playerProfile = null;
+    let gameScore = 0;
+    let levelScores = { 1: 0, 2: 0, 3: 0 };
+    let allProfiles = [];
+    let isLoading = false;
+    let draggedElement = null;
+    let sourceContainer = null;
+
+    // ===========================
+    // Level Data
+    // ===========================
+    const levels = {
+      1: {
+        title: "Level 1: Dasar Pemrograman",
+        description: "Susun urutan langkah-langkah dalam membuat program sederhana",
+        items: [
+          { id: 'l1_1', text: '1. Analisis Masalah', order: 1 },
+          { id: 'l1_2', text: '2. Desain Algoritma', order: 2 },
+          { id: 'l1_3', text: '3. Menulis Kode Program', order: 3 },
+          { id: 'l1_4', text: '4. Kompilasi/Interpretasi', order: 4 },
+          { id: 'l1_5', text: '5. Testing & Debugging', order: 5 }
+        ],
+        hint: "Pikirkan urutan logis dalam siklus pengembangan perangkat lunak!"
+      },
+      2: {
+        title: "Level 2: Struktur Kontrol",
+        description: "Cocokkan struktur kontrol dengan fungsinya",
+        pairs: [
+          { id: 'l2_1', item: 'IF-ELSE', target: 'Percabangan/Seleksi', matched: false },
+          { id: 'l2_2', item: 'FOR', target: 'Perulangan dengan counter', matched: false },
+          { id: 'l2_3', item: 'WHILE', target: 'Perulangan dengan kondisi', matched: false },
+          { id: 'l2_4', item: 'SWITCH', target: 'Seleksi multi-kondisi', matched: false },
+          { id: 'l2_5', item: 'DO-WHILE', target: 'Perulangan minimal 1x', matched: false }
+        ],
+        hint: "Ingat fungsi dasar setiap struktur kontrol dalam pemrograman!"
+      },
+      3: {
+        title: "Level 3: Tipe Data & Variabel",
+        description: "Kelompokkan contoh data ke tipe data yang sesuai",
+        categories: [
+          { id: 'int', name: 'Integer', items: ['42', '-17', '0', '1000'] },
+          { id: 'float', name: 'Float', items: ['3.14', '-2.5', '0.001'] },
+          { id: 'string', name: 'String', items: ['"Halo"', '"SMK"', '"123"'] },
+          { id: 'bool', name: 'Boolean', items: ['true', 'false'] }
+        ],
+        hint: "Perhatikan format penulisan setiap data!"
+      }
+    };
+
+    const materiPendahuluan = {
+      title: "📚 Materi Pendahuluan Pemrograman",
+      sections: [
+        {
+          title: "Apa itu Pemrograman?",
+          content: "Pemrograman adalah proses menulis instruksi yang dapat dipahami oleh komputer untuk menyelesaikan suatu masalah. Seorang programmer menggunakan bahasa pemrograman untuk berkomunikasi dengan komputer."
+        },
+        {
+          title: "Algoritma & Flowchart",
+          content: "Algoritma adalah langkah-langkah sistematis untuk menyelesaikan masalah. Flowchart adalah representasi visual dari algoritma menggunakan simbol-simbol standar."
+        },
+        {
+          title: "Struktur Kontrol",
+          content: "Struktur kontrol mengatur alur eksekusi program:\n• Sekuensial: Instruksi dijalankan berurutan\n• Seleksi (IF-ELSE): Memilih jalur berdasarkan kondisi\n• Perulangan (FOR, WHILE): Mengulang instruksi"
+        },
+        {
+          title: "Tipe Data",
+          content: "Tipe data mendefinisikan jenis nilai yang dapat disimpan:\n• Integer: Bilangan bulat (contoh: 1, -5, 100)\n• Float: Bilangan desimal (contoh: 3.14, -2.5)\n• String: Teks (contoh: \"Halo Dunia\")\n• Boolean: Nilai logika (true/false)"
+        }
+      ]
+    };
+
+    // ===========================
+    // Data SDK Handler
+    // ===========================
+    const dataHandler = {
+      onDataChanged(data) {
+        allProfiles = data;
+        if (playerProfile && playerProfile.__backendId) {
+          const updated = data.find(p => p.__backendId === playerProfile.__backendId);
+          if (updated) {
+            playerProfile = updated;
+          }
+        }
+      }
+    };
+
+    // ===========================
+    // Utility Functions
+    // ===========================
+    function showToast(message, type = 'info') {
+      const existingToast = document.querySelector('.toast');
+      if (existingToast) existingToast.remove();
+
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+      }, 3000);
+    }
+
+    function showVictory() {
+      if (gameScore >= 70) {
+        updateProfileScore();
+        setTimeout(() => {
+          navigateTo('result');
+        }, 1500);
+      } else {
+        navigateTo('result');
+      }
+    }
+
+    function navigateTo(screen, data = {}) {
+      currentScreen = screen;
+      if (data.level) currentLevel = data.level;
+      render();
+    }
+
+    function startLevel(level) {
+      currentLevel = level;
+      gameScore = 0;
+      navigateTo('game', { level });
+    }
+
+    async function saveProfile(name, kelas) {
+      if (isLoading) return;
+      if (allProfiles.length >= 999) {
+        showToast('Batas profil tercapai!', 'error');
+        return;
+      }
+
+      isLoading = true;
+      const saveBtn = document.getElementById('save-profile-btn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Menyimpan...';
+      }
+
+      const result = await window.dataSdk.create({
+        player_name: name,
+        player_class: kelas,
+        highest_level: 0,
+        total_score: 0,
+        created_at: new Date().toISOString()
+      });
+
+      isLoading = false;
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Simpan Profil';
+      }
+
+      if (result.isOk) {
+        showToast('Profil berhasil disimpan!', 'success');
+        navigateTo('main-menu');
+      } else {
+        showToast('Gagal menyimpan profil!', 'error');
+      }
+    }
+
+    async function updateProfileScore() {
+      if (!playerProfile || !playerProfile.__backendId || isLoading) return;
+
+      isLoading = true;
+      const totalScore = levelScores[1] + levelScores[2] + levelScores[3];
+      const highestLevel = Math.max(playerProfile.highest_level || 0, currentLevel);
+
+      const result = await window.dataSdk.update({
+        ...playerProfile,
+        highest_level: highestLevel,
+        total_score: Math.max(playerProfile.total_score || 0, totalScore)
+      });
+
+      isLoading = false;
+
+      if (result.isOk) {
+        playerProfile.highest_level = highestLevel;
+        playerProfile.total_score = Math.max(playerProfile.total_score || 0, totalScore);
+      }
+    }
+
+    function handleProfileSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('player-name').value.trim();
+      const kelas = document.getElementById('player-class').value.trim();
+
+      if (!name || !kelas) {
+        showToast('Mohon isi semua field!', 'error');
+        return;
+      }
+
+      if (playerProfile && playerProfile.__backendId) {
+        handleUpdateProfile(name, kelas);
+      } else {
+        saveProfile(name, kelas);
+      }
+    }
+
+    async function handleUpdateProfile(name, kelas) {
+      if (isLoading) return;
+      isLoading = true;
+      const btn = document.getElementById('save-profile-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Menyimpan...';
+      }
+
+      const result = await window.dataSdk.update({
+        ...playerProfile,
+        player_name: name,
+        player_class: kelas
+      });
+
+      isLoading = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '💾 Simpan Profil';
+      }
+
+      if (result.isOk) {
+        showToast('Profil berhasil diperbarui!', 'success');
+        navigateTo('main-menu');
+      } else {
+        showToast('Gagal memperbarui profil!', 'error');
+      }
+    }
+
+    // ===========================
+    // Drag & Drop Functions
+    // ===========================
+    function initDragDrop() {
+      setTimeout(() => {
+        const draggables = document.querySelectorAll('.draggable-item, .item-tag');
+        const dropZones = document.querySelectorAll('.drop-zone, .category-drop');
+
+        draggables.forEach(el => {
+          el.addEventListener('dragstart', handleDragStart);
+          el.addEventListener('dragend', handleDragEnd);
+          el.addEventListener('touchstart', handleTouchStart, { passive: false });
+          el.addEventListener('touchmove', handleTouchMove, { passive: false });
+          el.addEventListener('touchend', handleTouchEnd);
+        });
+
+        dropZones.forEach(zone => {
+          zone.addEventListener('dragover', handleDragOver);
+          zone.addEventListener('dragleave', handleDragLeave);
+          zone.addEventListener('drop', handleDrop);
+        });
+      }, 100);
+    }
+
+    function handleDragStart(e) {
+      draggedElement = e.target;
+      sourceContainer = draggedElement.parentNode;
+      draggedElement.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      if (draggedElement) {
+        draggedElement.classList.remove('dragging');
+      }
+      document.querySelectorAll('.drop-zone, .category-drop').forEach(z => {
+        z.classList.remove('drag-over');
+      });
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      if (e.currentTarget === e.target) {
+        e.currentTarget.classList.remove('drag-over');
+      }
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const zone = e.currentTarget;
+      zone.classList.remove('drag-over');
+
+      if (draggedElement) {
+        const existingItem = zone.querySelector('.draggable-item, .item-tag');
+        if (existingItem && sourceContainer) {
+          sourceContainer.appendChild(existingItem);
+        }
+
+        zone.innerHTML = '';
+        zone.appendChild(draggedElement);
+        draggedElement.classList.remove('dragging');
+        initDragDrop();
+      }
+    }
+
+    // Touch handlers
+    let touchClone = null;
+
+    function handleTouchStart(e) {
+      e.preventDefault();
+      draggedElement = e.target.closest('.draggable-item, .item-tag');
+      if (!draggedElement) return;
+
+      sourceContainer = draggedElement.parentNode;
+      touchClone = draggedElement.cloneNode(true);
+      touchClone.style.position = 'fixed';
+      touchClone.style.zIndex = '1000';
+      touchClone.style.opacity = '0.8';
+      touchClone.style.pointerEvents = 'none';
+      document.body.appendChild(touchClone);
+
+      draggedElement.style.opacity = '0.3';
+    }
+
+    function handleTouchMove(e) {
+      e.preventDefault();
+      if (!touchClone) return;
+
+      const touch = e.touches[0];
+      touchClone.style.left = (touch.clientX - 50) + 'px';
+      touchClone.style.top = (touch.clientY - 25) + 'px';
+
+      const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropZone = elemBelow?.closest('.drop-zone, .category-drop');
+
+      document.querySelectorAll('.drop-zone, .category-drop').forEach(z => {
+        z.classList.remove('drag-over');
+      });
+
+      if (dropZone) dropZone.classList.add('drag-over');
+    }
+
+    function handleTouchEnd(e) {
+      if (!touchClone || !draggedElement) return;
+
+      const touch = e.changedTouches[0];
+      const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+      const dropZone = elemBelow?.closest('.drop-zone, .category-drop');
+
+      if (dropZone && sourceContainer) {
+        const existingItem = dropZone.querySelector('.draggable-item, .item-tag');
+        if (existingItem) {
+          sourceContainer.appendChild(existingItem);
+        }
+
+        dropZone.innerHTML = '';
+        dropZone.appendChild(draggedElement);
+      }
+
+      draggedElement.style.opacity = '1';
+      if (touchClone.parentNode) touchClone.remove();
+      touchClone = null;
+      draggedElement = null;
+
+      document.querySelectorAll('.drop-zone, .category-drop').forEach(z => {
+        z.classList.remove('drag-over');
+      });
+
+      initDragDrop();
+    }
+
+    function checkAnswer() {
+      let correct = 0;
+      let total = 0;
+
+      if (currentLevel === 1) {
+        const zones = document.querySelectorAll('.drop-zone');
+        total = 5;
+
+        zones.forEach(zone => {
+          const targetOrder = parseInt(zone.dataset.targetOrder);
+          const item = zone.querySelector('.draggable-item');
+
+          zone.classList.remove('correct', 'incorrect');
+
+          if (item) {
+            const itemOrder = parseInt(item.dataset.order);
+            if (itemOrder === targetOrder) {
+              zone.classList.add('correct');
+              correct++;
+            } else {
+              zone.classList.add('incorrect');
+            }
+          }
+        });
+      } else if (currentLevel === 2) {
+        const zones = document.querySelectorAll('.drop-zone');
+        total = 5;
+
+        zones.forEach(zone => {
+          const targetMatch = zone.dataset.targetMatch;
+          const item = zone.querySelector('.draggable-item');
+
+          zone.classList.remove('correct', 'incorrect');
+
+          if (item) {
+            const itemMatch = item.dataset.match;
+            if (itemMatch === targetMatch) {
+              zone.classList.add('correct');
+              correct++;
+            } else {
+              zone.classList.add('incorrect');
+            }
+          }
+        });
+      } else if (currentLevel === 3) {
+        const zones = document.querySelectorAll('.category-drop');
+
+        zones.forEach(zone => {
+          const category = zone.dataset.category;
+          const items = zone.querySelectorAll('.item-tag');
+
+          items.forEach(item => {
+            total++;
+            if (item.dataset.category === category) {
+              item.style.background = 'linear-gradient(90deg, #00ff64, #00cc50)';
+              correct++;
+            } else {
+              item.style.background = 'linear-gradient(90deg, #ff6b6b, #ff5252)';
+            }
+          });
+        });
+
+        const sourceItems = document.querySelectorAll('.source-container .item-tag');
+        sourceItems.forEach(item => {
+          total++;
+        });
+      }
+
+      gameScore = total > 0 ? Math.round((correct / total) * 100) : 0;
+      levelScores[currentLevel] = gameScore;
+
+      document.getElementById('score-display').innerHTML = `<div class="score-display-number">${gameScore}</div>`;
+
+      showVictory();
+    }
+
+    // ===========================
+    // Render Functions
+    // ===========================
+    function render() {
+      const app = document.getElementById('app');
+
+      switch (currentScreen) {
+        case 'welcome':
+          app.innerHTML = renderWelcome();
+          break;
+        case 'main-menu':
+          app.innerHTML = renderMainMenu();
+          break;
+        case 'profile':
+          app.innerHTML = renderProfile();
+          break;
+        case 'materi':
+          app.innerHTML = renderMateri();
+          break;
+        case 'level-select':
+          app.innerHTML = renderLevelSelect();
+          break;
+        case 'game':
+          app.innerHTML = renderGame();
+          initDragDrop();
+          break;
+        case 'result':
+          app.innerHTML = renderResult();
+          break;
+      }
+    }
+
+    function renderWelcome() {
+      return `
+        <div class="container welcome-screen" style="position: relative;">
+          <div class="decorative-element element-1"></div>
+          <div class="decorative-element element-2"></div>
+          <div class="decorative-element element-3"></div>
+
+          <div class="welcome-content">
+            <h1 class="welcome-title title-font" id="welcome-title-display">${config.welcome_title || defaultConfig.welcome_title}</h1>
+            <h2 class="welcome-school title-font" id="welcome-school-display">dari ${config.school_name || defaultConfig.school_name}</h2>
+
+            <div class="card-glass">
+              <div class="welcome-emoji">🎮💻🚀</div>
+              <h3 class="welcome-subtitle">Mari Mulai Permainan-mu di Sini!!</h3>
+              <p class="welcome-description">
+                Game edukatif interaktif untuk mempelajari dasar-dasar pemrograman.<br>
+                Cocok untuk siswa SMK/SMA jurusan Informatika!
+              </p>
+              <button class="btn-cyber" onclick="navigateTo('main-menu')" style="width: 100%;">
+                🎯 MULAI SEKARANG
+              </button>
+            </div>
+
+            <p style="color: #999999; font-size: 12px; margin-top: 20px;">
+              © 2024 Game Interaktif Informatika - ${config.school_name || defaultConfig.school_name}
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMainMenu() {
+      return `
+        <div class="container main-menu-container">
+          <div class="header">
+            <button class="btn-back" onclick="navigateTo('welcome')">← Kembali</button>
+            <div class="header-title">
+              <h1 class="title-font" style="font-size: 24px; color: #00d4ff;">Menu Utama</h1>
+            </div>
+            <div style="width: 100px;"></div>
+          </div>
+
+          <div class="menu-grid">
+            <!-- Profile Card -->
+            <div class="menu-card">
+              <div class="menu-icon">👤</div>
+              <h2 class="menu-title">Profil Pemain</h2>
+              <div class="menu-description">
+                ${playerProfile ? 'Kelola profil pemain' : 'Buat profil baru'}
+              </div>
+
+              ${playerProfile ? `
+                <div class="profile-info" style="margin-bottom: 12px; font-size: 13px; text-align: center;">
+                  <p><span>Nama:</span> ${playerProfile.player_name}</p>
+                  <p><span>Kelas:</span> ${playerProfile.player_class}</p>
+                  <div class="stats-grid">
+                    <div class="stat-box">
+                      <div class="stat-number">${playerProfile.highest_level || 0}</div>
+                      <div class="stat-label">Level Tertinggi</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-number">${playerProfile.total_score || 0}</div>
+                      <div class="stat-label">Total Skor</div>
+                    </div>
+                  </div>
+                </div>
+                <button class="menu-button" onclick="navigateTo('profile')">✏️ Edit Profil</button>
+              ` : `
+                <button class="menu-button" onclick="navigateTo('profile')">➕ Buat Profil</button>
+              `}
+            </div>
+
+            <!-- Materi Card -->
+            <div class="menu-card">
+              <div class="menu-icon">📚</div>
+              <h2 class="menu-title">Materi Pendahuluan</h2>
+              <p class="menu-description">Pelajari konsep dasar pemrograman sebelum bermain!</p>
+              <button class="menu-button" onclick="navigateTo('materi')">📖 Baca Materi</button>
+            </div>
+
+            <!-- Play Game Card -->
+            <div class="menu-card">
+              <div class="menu-icon">🎮</div>
+              <h2 class="menu-title">Main Game</h2>
+              <p class="menu-description">3 Level tantangan drag & drop untuk menguji pemahaman!</p>
+              <button class="menu-button" onclick="navigateTo('level-select')">🚀 Pilih Level</button>
+            </div>
+          </div>
+
+          <div style="text-align: center; color: #999999; font-size: 12px; margin-top: 16px;">
+            <p>Total Pemain Terdaftar: ${allProfiles.length}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProfile() {
+      return `
+        <div class="container">
+          <div class="header">
+            <button class="btn-back" onclick="navigateTo('main-menu')">← Kembali</button>
+            <div class="header-title">
+              <h1 class="title-font" style="font-size: 24px; color: #00d4ff;">Profil Pemain</h1>
+            </div>
+            <div style="width: 100px;"></div>
+          </div>
+
+          <div class="profile-container">
+            <div class="profile-form-card">
+              <div class="profile-icon">👤</div>
+
+              <form onsubmit="handleProfileSubmit(event)">
+                <div class="form-group">
+                  <label class="form-label" for="player-name">Nama Lengkap</label>
+                  <input 
+                    type="text" 
+                    id="player-name" 
+                    class="form-input"
+                    value="${playerProfile ? playerProfile.player_name : ''}"
+                    placeholder="Masukkan nama lengkap"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="player-class">Kelas</label>
+                  <input 
+                    type="text" 
+                    id="player-class" 
+                    class="form-input"
+                    value="${playerProfile ? playerProfile.player_class : ''}"
+                    placeholder="Contoh: XII RPL 1"
+                    required
+                  />
+                </div>
+
+                <button type="submit" id="save-profile-btn" class="form-button">
+                  💾 Simpan Profil
+                </button>
+              </form>
+
+              ${playerProfile ? `
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #555555;">
+                  <h3 style="font-size: 16px; font-weight: bold; color: #00d4ff; margin-bottom: 12px;">Statistik</h3>
+                  <div class="stats-grid">
+                    <div class="stat-box">
+                      <div class="stat-number">${playerProfile.highest_level || 0}</div>
+                      <div class="stat-label">Level Tertinggi</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-number">${playerProfile.total_score || 0}</div>
+                      <div class="stat-label">Total Skor</div>
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMateri() {
+      return `
+        <div class="container">
+          <div class="header">
+            <button class="btn-back" onclick="navigateTo('main-menu')">← Kembali</button>
+            <div class="header-title">
+              <h1 class="title-font" style="font-size: 20px; color: #00d4ff;">${materiPendahuluan.title}</h1>
+            </div>
+            <div style="width: 100px;"></div>
+          </div>
+
+          <div class="materi-container">
+            <div class="materi-content">
+              ${materiPendahuluan.sections.map((section, idx) => `
+                <div class="materi-section" style="animation-delay: ${idx * 0.1}s;">
+                  <h2 class="materi-section-title">
+                    <span class="section-number">${idx + 1}</span>
+                    ${section.title}
+                  </h2>
+                  <p class="materi-text">${section.content}</p>
+                </div>
+              `).join('')}
+
+              <div class="tips-section">
+                <div class="tips-title">💡 Tips Bermain</div>
+                <div class="tips-list">
+                  • Baca dan pahami materi sebelum memulai game<br>
+                  • Setiap level memiliki tantangan berbeda<br>
+                  • Drag & drop item ke posisi yang benar<br>
+                  • Semakin cepat dan tepat, skor semakin tinggi!
+                </div>
+              </div>
+
+              <div class="materi-button">
+                <button class="btn-cyber" onclick="navigateTo('level-select')" style="padding: 16px 32px; font-size: 18px;">
+                  🎮 Mulai Bermain
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLevelSelect() {
+      const unlockedLevel = playerProfile ? (playerProfile.highest_level || 0) + 1 : 1;
+
+      return `
+        <div class="container">
+          <div class="header">
+            <button class="btn-back" onclick="navigateTo('main-menu')">← Menu Utama</button>
+            <div class="header-title">
+              <h1 class="title-font" style="font-size: 24px; color: #00d4ff;">Pilih Level</h1>
+            </div>
+            <div style="width: 100px;"></div>
+          </div>
+
+          <div class="level-select-container">
+            <div class="level-grid">
+              ${[1, 2, 3].map(level => {
+                const levelData = levels[level];
+                const isLocked = level > unlockedLevel;
+                const isCompleted = playerProfile && (playerProfile.highest_level || 0) >= level;
+
+                return `
+                  <div class="level-card ${isLocked ? 'locked' : ''} ${isCompleted ? 'border: 2px solid #00ff64;' : ''}">
+                    <div class="level-icon">
+                      ${isLocked ? '🔒' : isCompleted ? '✅' : level === 1 ? '📝' : level === 2 ? '🔀' : '📊'}
+                    </div>
+                    <h2 class="level-title">Level ${level}</h2>
+                    <h3 class="level-name">
+                      ${level === 1 ? 'Dasar Pemrograman' : level === 2 ? 'Struktur Kontrol' : 'Tipe Data'}
+                    </h3>
+                    <p class="level-description">${levelData.description}</p>
+
+                    ${isCompleted ? `
+                      <div class="level-stars">
+                        <span>⭐</span>
+                        <span>⭐</span>
+                        <span>⭐</span>
+                      </div>
+                      <p class="level-score">Skor: ${levelScores[level] || 100}</p>
+                    ` : ''}
+
+                    <button 
+                      class="level-button"
+                      onclick="${isLocked ? '' : `startLevel(${level})`}"
+                      ${isLocked ? 'disabled' : ''}
+                    >
+                      ${isLocked ? '🔒 Terkunci' : isCompleted ? '🔄 Main Lagi' : '▶️ Mulai'}
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <div style="text-align: center; color: #999999; font-size: 12px; margin-top: 16px;">
+            <p>💡 Selesaikan level sebelumnya untuk membuka level berikutnya</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGame() {
+      const levelData = levels[currentLevel];
+
+      return `
+        <div class="game-container">
+          <div class="header">
+            <button class="btn-back" onclick="navigateTo('level-select')">← Kembali</button>
+            <div class="header-title">
+              <h1 class="title-font" style="font-size: 18px; color: #00d4ff;">${levelData.title}</h1>
+              <p style="font-size: 12px; color: #999999;">${levelData.description}</p>
+            </div>
+            <div class="score-display">
+              <div style="font-size: 12px; color: #999999;">Skor</div>
+              <div id="score-display" class="score-display-number">0</div>
+            </div>
+          </div>
+
+          <div class="game-area" id="game-area">
+            ${currentLevel === 1 ? renderLevel1() : currentLevel === 2 ? renderLevel2() : renderLevel3()}
+          </div>
+
+          <div class="game-hint">💡 ${levelData.hint}</div>
+
+          <div class="game-footer">
+            <button class="btn-check" onclick="checkAnswer()">
+              ✓ Periksa Jawaban
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLevel1() {
+      const items = [...levels[1].items].sort(() => Math.random() - 0.5);
+
+      return `
+        <div class="level1-grid">
+          <div class="game-column">
+            <div class="column-title">📦 Seret Item:</div>
+            <div class="source-container" id="source-container">
+              ${items.map(item => `
+                <div 
+                  class="draggable-item"
+                  draggable="true"
+                  data-id="${item.id}"
+                  data-order="${item.order}"
+                >
+                  ${item.text}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="game-column">
+            <div class="column-title">🎯 Urutan yang Benar:</div>
+            <div class="drop-zones">
+              ${[1, 2, 3, 4, 5].map(order => `
+                <div 
+                  class="drop-zone"
+                  data-target-order="${order}"
+                >
+                  <span>Langkah ${order}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLevel2() {
+      const pairs = [...levels[2].pairs];
+      const shuffledItems = [...pairs].sort(() => Math.random() - 0.5);
+      const shuffledTargets = [...pairs].sort(() => Math.random() - 0.5);
+
+      return `
+        <div class="level2-grid">
+          <div class="game-column">
+            <div class="column-title">📦 Struktur Kontrol:</div>
+            <div class="source-container" id="source-container">
+              ${shuffledItems.map(pair => `
+                <div 
+                  class="draggable-item"
+                  draggable="true"
+                  data-id="${pair.id}"
+                  data-match="${pair.target}"
+                  style="text-align: center;"
+                >
+                  ${pair.item}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="game-column">
+            <div class="column-title">🎯 Fungsi:</div>
+            <div class="drop-zones">
+              ${shuffledTargets.map(pair => `
+                <div 
+                  class="drop-zone"
+                  data-target-match="${pair.target}"
+                >
+                  <span>${pair.target}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLevel3() {
+      const categories = levels[3].categories;
+      const allItems = [];
+      categories.forEach(cat => {
+        cat.items.forEach(item => {
+          allItems.push({ value: item, category: cat.id });
+        });
+      });
+      const shuffledItems = allItems.sort(() => Math.random() - 0.5);
+
+      return `
+        <div class="level3-container">
+          <div class="level3-source">
+            <div class="level3-source-title">📦 Data untuk Dikelompokkan:</div>
+            <div class="items-container" id="source-container">
+              ${shuffledItems.map((item, idx) => `
+                <div 
+                  class="item-tag"
+                  draggable="true"
+                  data-id="item_${idx}"
+                  data-category="${item.category}"
+                >
+                  ${item.value}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="categories-grid">
+            ${categories.map(cat => `
+              <div class="category-box">
+                <div class="category-name">${cat.name}</div>
+                <div 
+                  class="category-drop"
+                  data-category="${cat.id}"
+                ></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderResult() {
+      const isPass = gameScore >= 70;
+      const stars = gameScore >= 90 ? 3 : gameScore >= 80 ? 2 : gameScore >= 70 ? 1 : 0;
+
+      return `
+        <div class="container result-container">
+          <div class="result-card">
+            <div class="result-emoji">
+              ${isPass ? '🎉' : '😢'}
+            </div>
+
+            <h1 class="result-title ${isPass ? 'pass' : 'fail'}">
+              ${isPass ? 'SELAMAT!' : 'COBA LAGI!'}
+            </h1>
+
+            <p class="result-subtitle">
+              Level ${currentLevel} ${isPass ? 'Berhasil' : 'Belum Berhasil'}
+            </p>
+
+            <div class="result-score-box">
+              <div class="result-score">${gameScore}</div>
+              <div class="result-score-label">Skor Anda</div>
+
+              ${stars > 0 ? `
+                <div class="result-stars">
+                  ${Array(stars).fill('⭐').join('')}
+                  ${Array(3 - stars).fill('☆').map((_, i) => `<span style="color: #666666; text-shadow: none;">${_}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="result-buttons">
+              <button class="result-button" onclick="startLevel(${currentLevel})">
+                🔄 Main Ulang
+              </button>
+
+              ${isPass && currentLevel < 3 ? `
+                <button class="result-button" onclick="startLevel(${currentLevel + 1})">
+                  ▶️ Level Berikutnya
+                </button>
+              ` : ''}
+
+              <button class="result-button secondary" onclick="navigateTo('main-menu')">
+                🏠 Menu Utama
+              </button>
+            </div>
+
+            ${isPass && currentLevel === 3 ? `
+              <div class="completion-message">
+                🏆 SELAMAT! Anda telah menyelesaikan semua level!
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // ===========================
+    // Initialize
+    // ===========================
+    async function init() {
+      const dataResult = await window.dataSdk.init(dataHandler);
+      if (!dataResult.isOk) {
+        console.error('Failed to initialize Data SDK');
+      }
+
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          const titleEl = document.getElementById('welcome-title-display');
+          const schoolEl = document.getElementById('welcome-school-display');
+          if (titleEl) titleEl.textContent = config.welcome_title || defaultConfig.welcome_title;
+          if (schoolEl) schoolEl.textContent = `dari ${config.school_name || defaultConfig.school_name}`;
+        },
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.primary_color || defaultConfig.primary_color,
+              set: (v) => { cfg.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); }
+            },
+            {
+              get: () => cfg.secondary_color || defaultConfig.secondary_color,
+              set: (v) => { cfg.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
+            },
+            {
+              get: () => cfg.accent_color || defaultConfig.accent_color,
+              set: (v) => { cfg.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
+            },
+            {
+              get: () => cfg.surface_color || defaultConfig.surface_color,
+              set: (v) => { cfg.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['welcome_title', cfg.welcome_title || defaultConfig.welcome_title],
+          ['school_name', cfg.school_name || defaultConfig.school_name]
+        ])
+      });
+
+      if (allProfiles.length > 0) {
+        playerProfile = allProfiles[0];
+      }
+
+      render();
+    }
+
+    init();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb3bc22861ef908',t:'MTc3MDY0Mzk2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
